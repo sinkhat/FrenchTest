@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>B1 French Reading Lab - Compact</title>
+
+  <style>
+    :root {
+      --card: #ffffff;
+      --soft: #fffaf3;
+      --text: #24170f;
+      --muted: #6b4f3f;
+      --border: #ead8c8;
+      --primary: #9a3412;
+      --primary-dark: #7c2d12;
+      --primary-soft: #ffedd5;
+      --green: #166534;
+      --green-soft: #dcfce7;
+      --blue-soft: #dbeafe;
+      --purple-soft: #ede9fe;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --focus: #2563eb;
+      --shadow: 0 10px 28px rgba(70, 35, 12, 0.14);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #fff7ed, #fffbeb);
+      color: var(--text);
+      padding: 10px;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    audio:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .app {
+      max-width: 1280px;
+      height: calc(100vh - 20px);
+      margin: 0 auto;
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.3;
+    }
+
+    .badge {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border: 1px solid #fdba74;
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      font-size: 0.88rem;
+    }
+
+    main {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .panel {
+      min-height: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: #fffaf3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .panel-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 12px;
+    }
+
+    .reading-panel .audio-toolbar,
+    .reading-panel .highlight-toolbar {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+
+    audio {
+      width: 100%;
+      max-width: 520px;
+      height: 36px;
+    }
+
+    .audio-note {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.25;
+    }
+
+    .reading-scroll {
+      min-height: 0;
+      overflow: auto;
+      padding: 12px;
+      flex: 1;
+    }
+
+    .button-row,
+    .tabs,
+    .paragraph-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0;
+    }
+
+    .paragraph-buttons {
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      padding: 6px 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+
+    .btn:hover {
+      background: var(--primary-soft);
+      border-color: #fdba74;
+    }
+
+    .btn.active,
+    .btn[aria-pressed="true"] {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .btn.secondary.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn.danger {
+      color: var(--red);
+    }
+
+    .reading-text {
+      font-size: 1rem;
+      line-height: 1.72;
+    }
+
+    .reading-text p {
+      margin: 0 0 0.85rem;
+    }
+
+    .paragraph-tag {
+      display: inline-block;
+      color: var(--primary-dark);
+      font-weight: 800;
+      margin-bottom: 3px;
+      font-size: 0.82rem;
+    }
+
+    .hotspot {
+      display: inline;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 1px 2px;
+      border-radius: 5px;
+      text-decoration: underline dotted rgba(124, 45, 18, 0.45);
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    .hotspot:hover {
+      background: #ffedd5;
+    }
+
+    .show-verbs .hotspot.verb {
+      background: #fde68a;
+      text-decoration: none;
+    }
+
+    .show-nouns .hotspot.noun {
+      background: var(--blue-soft);
+      text-decoration: none;
+    }
+
+    .show-prepositions .hotspot.preposition {
+      background: var(--green-soft);
+      text-decoration: none;
+    }
+
+    .show-expressions .hotspot.expression {
+      background: var(--purple-soft);
+      text-decoration: none;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .empty-state,
+    .info-card,
+    .analysis-card,
+    .learning-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fffaf3;
+      margin-bottom: 10px;
+    }
+
+    .empty-state {
+      border-style: dashed;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .info-type {
+      display: inline-block;
+      padding: 4px 8px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      margin-bottom: 7px;
+    }
+
+    .info-card h3,
+    .analysis-card h3,
+    .learning-card h3 {
+      margin: 0 0 7px;
+      font-size: 1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 105px 1fr;
+      gap: 6px 10px;
+      font-size: 0.94rem;
+    }
+
+    .info-grid strong {
+      color: var(--primary-dark);
+    }
+
+    ul {
+      margin-top: 7px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .analysis-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 7px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+    }
+
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin: 0 0 10px;
+      padding: 10px;
+      background: white;
+    }
+
+    legend {
+      font-weight: 800;
+      padding: 0 4px;
+      font-size: 0.95rem;
+    }
+
+    label.option {
+      display: block;
+      padding: 7px;
+      border-radius: 10px;
+      margin-top: 5px;
+      font-size: 0.93rem;
+    }
+
+    label.option:hover {
+      background: var(--primary-soft);
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .feedback.correct {
+      display: block;
+      color: var(--green);
+      background: var(--green-soft);
+      border: 1px solid #86efac;
+    }
+
+    .feedback.wrong {
+      display: block;
+      color: var(--red);
+      background: var(--red-soft);
+      border: 1px solid #fca5a5;
+    }
+
+    .score-box {
+      display: none;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border: 1px solid #fdba74;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .progress {
+      width: 100%;
+      height: 16px;
+      background: #f7caa6;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 7px;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      line-height: 16px;
+      font-size: 0.74rem;
+      transition: width 0.35s ease;
+    }
+
+    .learning-path {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 920px) {
+      body { padding: 8px; }
+
+      .app {
+        height: auto;
+        min-height: calc(100vh - 16px);
+        overflow: visible;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-body,
+      .reading-scroll {
+        overflow: visible;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      main {
+        padding: 8px;
+      }
+
+      header,
+      .panel-header,
+      .reading-panel .audio-toolbar,
+      .reading-panel .highlight-toolbar,
+      .reading-scroll,
+      .panel-body {
+        padding: 10px;
+      }
+
+      .button-row,
+      .tabs,
+      .paragraph-buttons {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app" id="app">
+    <header>
+      <div class="header-row">
+        <div>
+          <h1>Un changement d’habitudes</h1>
+          <p class="subtitle">Listen, read, click language items, then complete the quiz.</p>
+        </div>
+        <div class="badge">B1</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel reading-panel" aria-labelledby="readingTitle">
+        <div class="panel-header">
+          <h2 class="panel-title" id="readingTitle">Reading</h2>
+        </div>
+
+        <div class="audio-toolbar">
+          <audio id="audioPlayer" controls preload="metadata">
+            <source src="audio/reading.mp3" type="audio/mpeg" />
+            Your browser does not support audio.
+          </audio>
+          <p class="audio-note" id="audioNote" aria-live="polite">
+            Add your voiceover file as <strong>audio/reading.mp3</strong>.
+          </p>
+        </div>
+
+        <div class="highlight-toolbar">
+          <div class="button-row" aria-label="Highlight controls">
+            <button class="btn" type="button" data-highlight="verbs" aria-pressed="false">Show verbs</button>
+            <button class="btn" type="button" data-highlight="nouns" aria-pressed="false">Show nouns</button>
+            <button class="btn" type="button" data-highlight="prepositions" aria-pressed="false">Show prepositions</button>
+            <button class="btn" type="button" data-highlight="expressions" aria-pressed="false">Show expressions</button>
+            <button class="btn danger" type="button" id="clearHighlights">Hide all</button>
+          </div>
+        </div>
+
+        <div class="reading-scroll">
+          <article class="reading-text" id="readingText" aria-label="French reading text"></article>
+        </div>
+      </section>
+
+      <aside class="panel" aria-labelledby="exploreTitle">
+        <div class="panel-header">
+          <h2 class="panel-title" id="exploreTitle">Explore</h2>
+
+          <div class="tabs" role="tablist" aria-label="Explore options">
+            <button class="btn secondary active" type="button" data-tab="info">Clicked item</button>
+            <button class="btn secondary" type="button" data-tab="analysis">Paragraphs</button>
+            <button class="btn secondary" type="button" data-tab="quiz">Quiz</button>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <section class="tab-content active" id="tab-info">
+            <h2 class="sr-only">Clicked item information</h2>
+            <div id="infoBox" class="empty-state" aria-live="polite">
+              Click a verb, noun, preposition, or expression in the text to see the explanation.
+            </div>
+          </section>
+
+          <section class="tab-content" id="tab-analysis">
+            <h2 class="sr-only">Paragraph analysis</h2>
+
+            <div class="paragraph-buttons">
+              <button class="btn active" type="button" data-para="1">Paragraph 1</button>
+              <button class="btn" type="button" data-para="2">Paragraph 2</button>
+              <button class="btn" type="button" data-para="3">Paragraph 3</button>
+            </div>
+
+            <div id="analysisArea"></div>
+          </section>
+
+          <section class="tab-content" id="tab-quiz">
+            <h2 class="sr-only">Reading quiz</h2>
+
+            <div class="score-box" id="scoreBox" aria-live="polite">
+              <div id="scoreText"></div>
+              <div class="progress" aria-hidden="true">
+                <div class="progress-fill" id="progressFill">0%</div>
+              </div>
+            </div>
+
+            <form id="quizForm"></form>
+            <div class="learning-path" id="learningPath"></div>
+          </section>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const app = document.getElementById("app");
+    const readingText = document.getElementById("readingText");
+    const infoBox = document.getElementById("infoBox");
+    const analysisArea = document.getElementById("analysisArea");
+    const quizForm = document.getElementById("quizForm");
+
+    const passage = [
+      {
+        number: 1,
+        chunks: [
+          { text: "Depuis quelques mois", type: "expression", key: "depuis" },
+          { text: ", " },
+          { text: "la ville", type: "noun", key: "ville" },
+          { text: " de Montval " },
+          { text: "encourage", type: "verb", key: "encourage" },
+          { text: " " },
+          { text: "ses habitants", type: "noun", key: "habitants" },
+          { text: " " },
+          { text: "à utiliser", type: "preposition", key: "aUtiliser" },
+          { text: " " },
+          { text: "moins souvent", type: "expression", key: "moinsSouvent" },
+          { text: " " },
+          { text: "la voiture", type: "noun", key: "voiture" },
+          { text: ". " },
+          { text: "La mairie", type: "noun", key: "mairie" },
+          { text: " " },
+          { text: "a créé", type: "verb", key: "aCree" },
+          { text: " " },
+          { text: "de nouvelles pistes cyclables", type: "noun", key: "pistes" },
+          { text: " et " },
+          { text: "a installé", type: "verb", key: "aInstalle" },
+          { text: " plus de bancs et d’arbres " },
+          { text: "dans le centre-ville", type: "preposition", key: "dansCentre" },
+          { text: ". L’objectif " },
+          { text: "est", type: "verb", key: "est" },
+          { text: " simple : " },
+          { text: "rendre", type: "verb", key: "rendre" },
+          { text: " " },
+          { text: "les déplacements", type: "noun", key: "deplacements" },
+          { text: " plus agréables et " },
+          { text: "réduire", type: "verb", key: "reduire" },
+          { text: " " },
+          { text: "la pollution", type: "noun", key: "pollution" },
+          { text: "." }
+        ]
+      },
+      {
+        number: 2,
+        chunks: [
+          { text: "Au début", type: "expression", key: "auDebut" },
+          { text: ", " },
+          { text: "beaucoup d’habitants", type: "noun", key: "beaucoupHabitants" },
+          { text: " " },
+          { text: "n’étaient pas convaincus", type: "verb", key: "etaient" },
+          { text: ". Certains " },
+          { text: "trouvaient", type: "verb", key: "trouvaient" },
+          { text: " que " },
+          { text: "les travaux", type: "noun", key: "travaux" },
+          { text: " " },
+          { text: "dérangeaient", type: "verb", key: "derangeaient" },
+          { text: " " },
+          { text: "la circulation", type: "noun", key: "circulation" },
+          { text: ", " },
+          { text: "surtout le matin", type: "expression", key: "surtout" },
+          { text: ". D’autres " },
+          { text: "pensaient", type: "verb", key: "pensaient" },
+          { text: " qu’il " },
+          { text: "serait", type: "verb", key: "serait" },
+          { text: " difficile de " },
+          { text: "faire leurs courses", type: "expression", key: "faireCourses" },
+          { text: " " },
+          { text: "sans voiture", type: "preposition", key: "sansVoiture" },
+          { text: ". " },
+          { text: "Pourtant", type: "expression", key: "pourtant" },
+          { text: ", " },
+          { text: "petit à petit", type: "expression", key: "petitAPetit" },
+          { text: ", " },
+          { text: "les habitudes", type: "noun", key: "habitudes" },
+          { text: " " },
+          { text: "ont commencé à changer", type: "verb", key: "ontCommence" },
+          { text: "." }
+        ]
+      },
+      {
+        number: 3,
+        chunks: [
+          { text: "Sophie, " },
+          { text: "qui habite à dix minutes de son travail", type: "expression", key: "quiHabite" },
+          { text: ", " },
+          { text: "prend", type: "verb", key: "prend" },
+          { text: " maintenant " },
+          { text: "son vélo", type: "noun", key: "sonVelo" },
+          { text: " " },
+          { text: "trois fois par semaine", type: "expression", key: "troisFois" },
+          { text: ". Elle " },
+          { text: "explique", type: "verb", key: "explique" },
+          { text: " qu’elle " },
+          { text: "arrive", type: "verb", key: "arrive" },
+          { text: " moins stressée " },
+          { text: "au bureau", type: "preposition", key: "auBureau" },
+          { text: " et qu’elle " },
+          { text: "dépense", type: "verb", key: "depense" },
+          { text: " moins d’argent " },
+          { text: "en essence", type: "preposition", key: "enEssence" },
+          { text: ". " },
+          { text: "Cependant", type: "expression", key: "cependant" },
+          { text: ", elle " },
+          { text: "reconnaît", type: "verb", key: "reconnait" },
+          { text: " que ce " },
+          { text: "n’est pas toujours facile", type: "verb", key: "nestPas" },
+          { text: " quand " },
+          { text: "il pleut", type: "verb", key: "pleut" },
+          { text: ". " },
+          { text: "La mairie", type: "noun", key: "mairie" },
+          { text: " " },
+          { text: "prévoit", type: "verb", key: "prevoit" },
+          { text: " maintenant " },
+          { text: "d’ajouter", type: "preposition", key: "dajouter" },
+          { text: " " },
+          { text: "des parkings pour vélos", type: "noun", key: "parkings" },
+          { text: " " },
+          { text: "près des commerces et de la gare", type: "preposition", key: "presDes" },
+          { text: "." }
+        ]
+      }
+    ];
+
+    const info = {
+      depuis: ["Depuis quelques mois", "Expression", "For the past few months", "Depuis connects a starting point in the past to the present.", "Depuis deux ans, j’apprends le français."],
+      ville: ["la ville", "Noun", "the city", "Feminine singular noun. Article: la.", "La ville est grande."],
+      encourage: ["encourage", "Verb", "encourages", "Infinitive: encourager. Tense: présent. Subject: la ville. La ville = elle, so the ending is -e.", "La ville encourage ses habitants."],
+      habitants: ["ses habitants", "Noun phrase", "its residents", "Habitants is masculine plural. Ses is used before plural nouns.", "La ville aide ses habitants."],
+      aUtiliser: ["à utiliser", "Preposition + infinitive", "to use", "After encourager quelqu’un à, use an infinitive verb.", "On encourage les élèves à lire."],
+      moinsSouvent: ["moins souvent", "Expression", "less often", "Moins = less. Souvent = often.", "Je conduis moins souvent."],
+      voiture: ["la voiture", "Noun", "the car", "Feminine singular noun. Article: la.", "La voiture est rouge."],
+      mairie: ["la mairie", "Noun", "city hall / local government", "Feminine singular noun. In this text, it means the local government.", "La mairie organise des activités."],
+      aCree: ["a créé", "Verb", "created / has created", "Infinitive: créer. Tense: passé composé. Structure: avoir + past participle.", "Elle a créé un projet."],
+      pistes: ["de nouvelles pistes cyclables", "Noun phrase", "new bike lanes", "Piste is feminine. Pistes cyclables is feminine plural. Nouvelles agrees with pistes.", "Une piste cyclable = a bike lane."],
+      aInstalle: ["a installé", "Verb", "installed / has installed", "Infinitive: installer. Tense: passé composé. Structure: avoir + past participle.", "La mairie a installé des bancs."],
+      dansCentre: ["dans le centre-ville", "Preposition", "in the city center / downtown", "Dans means in or inside. Le centre-ville is masculine singular.", "Je travaille dans le centre-ville."],
+      est: ["est", "Verb", "is", "Infinitive: être. Tense: présent. Subject: l’objectif. L’objectif = il, so use est.", "L’objectif est simple."],
+      rendre: ["rendre", "Infinitive verb", "to make", "Here, rendre means to make something become a certain way.", "Rendre les déplacements plus agréables."],
+      deplacements: ["les déplacements", "Noun", "travel / trips / movements", "Masculine plural noun. Article: les.", "Les déplacements sont faciles."],
+      reduire: ["réduire", "Infinitive verb", "to reduce", "Infinitive form. It expresses the goal of the city’s action.", "Réduire la pollution."],
+      pollution: ["la pollution", "Noun", "pollution", "Feminine singular noun. Article: la.", "La pollution augmente."],
+      auDebut: ["Au début", "Expression", "At first / at the beginning", "Au = à + le. Début is masculine.", "Au début, c’était difficile."],
+      beaucoupHabitants: ["beaucoup d’habitants", "Noun phrase", "many residents", "Beaucoup de becomes beaucoup d’ before a vowel sound.", "Beaucoup d’étudiants travaillent."],
+      etaient: ["n’étaient pas convaincus", "Verb", "were not convinced", "Infinitive: être. Tense: imparfait. Negative form: ne/n’ + verb + pas.", "Ils n’étaient pas contents."],
+      trouvaient: ["trouvaient", "Verb", "found / thought", "Infinitive: trouver. Tense: imparfait. Subject: certains. Ending: -aient.", "Ils trouvaient cela difficile."],
+      travaux: ["les travaux", "Noun", "construction work / roadwork", "Masculine plural noun. Often used in plural.", "Les travaux dérangent la circulation."],
+      derangeaient: ["dérangeaient", "Verb", "disturbed / bothered", "Infinitive: déranger. Tense: imparfait. Subject: les travaux. Ending: -aient.", "Les travaux dérangeaient les habitants."],
+      circulation: ["la circulation", "Noun", "traffic", "Feminine singular noun. Article: la.", "La circulation est difficile."],
+      surtout: ["surtout le matin", "Expression", "especially in the morning", "Surtout means especially.", "Il y a du trafic, surtout le matin."],
+      pensaient: ["pensaient", "Verb", "thought", "Infinitive: penser. Tense: imparfait. Subject: d’autres. Ending: -aient.", "Ils pensaient que c’était impossible."],
+      serait: ["serait", "Verb", "would be", "Infinitive: être. Tense: conditionnel présent. It expresses a possible or imagined situation.", "Ce serait difficile."],
+      faireCourses: ["faire leurs courses", "Expression", "to do their shopping / groceries", "Faire les courses is a fixed expression for grocery or daily shopping.", "Je fais mes courses le samedi."],
+      sansVoiture: ["sans voiture", "Preposition", "without a car", "Sans means without.", "Je peux venir sans voiture."],
+      pourtant: ["Pourtant", "Connector", "however / yet", "Pourtant introduces contrast.", "Il pleut. Pourtant, je sors."],
+      petitAPetit: ["petit à petit", "Expression", "little by little", "This expression shows gradual change.", "Petit à petit, je progresse."],
+      habitudes: ["les habitudes", "Noun", "habits", "Feminine plural noun. Singular: une habitude.", "Les habitudes changent."],
+      ontCommence: ["ont commencé à changer", "Verb structure", "began to change", "Passé composé + à + infinitive. Ont commencé = began. À changer = to change.", "Ils ont commencé à parler."],
+      quiHabite: ["qui habite à dix minutes de son travail", "Relative clause", "who lives ten minutes from her work", "Qui gives more information about Sophie. It is the subject of habite.", "Sophie, qui habite ici, travaille près du centre."],
+      prend: ["prend", "Verb", "takes", "Infinitive: prendre. Tense: présent. Subject: Sophie. Present form: elle prend.", "Elle prend son vélo."],
+      sonVelo: ["son vélo", "Noun phrase", "her bike", "Vélo is masculine singular, so French uses son, even when the owner is female.", "Sophie prend son vélo."],
+      troisFois: ["trois fois par semaine", "Expression", "three times per week", "Par semaine means per week.", "Je fais du sport trois fois par semaine."],
+      explique: ["explique", "Verb", "explains", "Infinitive: expliquer. Tense: présent. Subject: elle.", "Elle explique son choix."],
+      arrive: ["arrive", "Verb", "arrives", "Infinitive: arriver. Tense: présent. Subject: elle.", "Elle arrive tôt."],
+      auBureau: ["au bureau", "Preposition", "at the office / to the office", "Au = à + le. Bureau is masculine singular.", "Elle arrive au bureau."],
+      depense: ["dépense", "Verb", "spends", "Infinitive: dépenser. Tense: présent. Subject: elle.", "Elle dépense moins d’argent."],
+      enEssence: ["en essence", "Preposition", "on gas / fuel", "Here, en introduces the category of spending.", "Je dépense moins en transport."],
+      cependant: ["Cependant", "Connector", "however", "Cependant introduces contrast.", "J’aime le vélo. Cependant, il pleut."],
+      reconnait: ["reconnaît", "Verb", "admits / recognizes", "Infinitive: reconnaître. Tense: présent. Subject: elle.", "Elle reconnaît que c’est difficile."],
+      nestPas: ["n’est pas toujours facile", "Verb / negative structure", "is not always easy", "Negative form: ne/n’ + verb + pas. Toujours means always.", "Ce n’est pas facile."],
+      pleut: ["il pleut", "Verb", "it rains / it is raining", "Infinitive: pleuvoir. This is an impersonal verb, mostly used with il.", "Il pleut aujourd’hui."],
+      prevoit: ["prévoit", "Verb", "plans / foresees", "Infinitive: prévoir. Tense: présent. Subject: la mairie.", "La mairie prévoit des changements."],
+      dajouter: ["d’ajouter", "Preposition + infinitive", "to add", "D’ = de before a vowel. Prévoir de + infinitive = to plan to do something.", "Elle prévoit d’ajouter une activité."],
+      parkings: ["des parkings pour vélos", "Noun phrase", "bike parking areas", "Parkings is masculine plural. Pour vélos means for bikes.", "Un parking pour vélos = a bike parking area."],
+      presDes: ["près des commerces et de la gare", "Preposition", "near the shops and the train station", "Près de means near. Des = de + les. Gare is feminine singular.", "J’habite près de la gare."]
+    };
+
+    const analysis = {
+      1: `
+        <div class="analysis-card">
+          <h3>Paragraph 1 — General translation</h3>
+          <p>For the past few months, the city of Montval has encouraged its residents to use cars less often. The local government has created new bike lanes and added more benches and trees downtown. The goal is to make travel more pleasant and reduce pollution.</p>
+        </div>
+        <div class="analysis-card">
+          <h3>Grammar focus</h3>
+          <ul>
+            <li><strong>Depuis quelques mois</strong> connects the past to the present.</li>
+            <li><strong>encourage</strong> is present tense: <em>la ville encourage</em>.</li>
+            <li><strong>a créé</strong> and <strong>a installé</strong> are passé composé: <em>avoir + past participle</em>.</li>
+            <li><strong>rendre</strong> and <strong>réduire</strong> are infinitive verbs that explain the objective.</li>
+          </ul>
+        </div>
+      `,
+      2: `
+        <div class="analysis-card">
+          <h3>Paragraph 2 — General translation</h3>
+          <p>At first, many residents were not convinced. Some thought the construction disturbed traffic, especially in the morning. Others thought it would be difficult to do their shopping without a car. However, little by little, habits began to change.</p>
+        </div>
+        <div class="analysis-card">
+          <h3>Grammar focus</h3>
+          <ul>
+            <li><strong>n’étaient pas convaincus</strong> is imparfait in the negative form.</li>
+            <li><strong>trouvaient</strong>, <strong>dérangeaient</strong>, and <strong>pensaient</strong> are imparfait verbs.</li>
+            <li><strong>serait</strong> is conditional: <em>would be</em>.</li>
+            <li><strong>ont commencé à changer</strong> uses passé composé + à + infinitive.</li>
+          </ul>
+        </div>
+      `,
+      3: `
+        <div class="analysis-card">
+          <h3>Paragraph 3 — General translation</h3>
+          <p>Sophie, who lives ten minutes from work, now takes her bike three times a week. She explains that she arrives at the office less stressed and spends less money on gas. However, she admits that it is not always easy when it rains. The city now plans to add bike parking near shops and the train station.</p>
+        </div>
+        <div class="analysis-card">
+          <h3>Grammar focus</h3>
+          <ul>
+            <li><strong>qui habite...</strong> is a relative clause. It gives more information about Sophie.</li>
+            <li><strong>prend</strong>, <strong>explique</strong>, <strong>arrive</strong>, <strong>dépense</strong>, <strong>reconnaît</strong>, and <strong>prévoit</strong> are present tense verbs.</li>
+            <li><strong>qu’elle</strong> = <em>que + elle</em>.</li>
+            <li><strong>d’ajouter</strong> = <em>de + ajouter</em>.</li>
+          </ul>
+        </div>
+      `
+    };
+
+    const quiz = [
+      {
+        question: "1. Quel est le sujet principal du texte ?",
+        options: [
+          "Une famille prépare ses vacances.",
+          "Une ville encourage de nouvelles habitudes de déplacement.",
+          "Une entreprise vend des vélos."
+        ],
+        answer: 1,
+        focus: "main idea",
+        feedback: "The text is mainly about a city encouraging residents to use cars less often."
+      },
+      {
+        question: "2. Pourquoi certains habitants n’étaient-ils pas convaincus au début ?",
+        options: [
+          "Ils voulaient plus de voitures dans le centre-ville.",
+          "Ils n’aimaient pas les arbres et les bancs.",
+          "Les travaux dérangeaient la circulation et les courses semblaient plus difficiles sans voiture."
+        ],
+        answer: 2,
+        focus: "details",
+        feedback: "Paragraph 2 explains that roadwork disturbed traffic and that some people thought shopping would be difficult without a car."
+      },
+      {
+        question: "3. Quels avantages Sophie mentionne-t-elle ?",
+        options: [
+          "Elle arrive moins stressée et dépense moins d’argent en essence.",
+          "Elle a plus de vacances.",
+          "Elle travaille à la gare."
+        ],
+        answer: 0,
+        focus: "details",
+        feedback: "Sophie says she arrives less stressed at the office and spends less money on gas."
+      },
+      {
+        question: "4. Dans le dernier paragraphe, que montre le mot « Cependant » ?",
+        options: [
+          "Une cause.",
+          "Une opposition.",
+          "Une liste d’exemples."
+        ],
+        answer: 1,
+        focus: "connectors",
+        feedback: "Cependant means however. It introduces contrast or opposition."
+      },
+      {
+        question: "5. Qu’est-ce que la mairie prévoit d’ajouter ?",
+        options: [
+          "Plus de parkings pour voitures dans le centre-ville.",
+          "De nouveaux appartements.",
+          "Des parkings pour vélos près des commerces et de la gare."
+        ],
+        answer: 2,
+        focus: "details",
+        feedback: "The final sentence says the city plans to add bike parking near shops and the train station."
+      }
+    ];
+
+    function renderReading() {
+      readingText.innerHTML = "";
+
+      passage.forEach(paragraph => {
+        const p = document.createElement("p");
+
+        const label = document.createElement("span");
+        label.className = "paragraph-tag";
+        label.textContent = "Paragraph " + paragraph.number;
+        p.appendChild(label);
+        p.appendChild(document.createElement("br"));
+
+        paragraph.chunks.forEach(chunk => {
+          if (chunk.key) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "hotspot " + chunk.type;
+            button.textContent = chunk.text;
+            button.dataset.key = chunk.key;
+            button.setAttribute("aria-label", "Open explanation for " + chunk.text);
+            p.appendChild(button);
+          } else {
+            p.appendChild(document.createTextNode(chunk.text));
+          }
+        });
+
+        readingText.appendChild(p);
+      });
+    }
+
+    function renderInfo(key) {
+      const item = info[key];
+
+      if (!item) return;
+
+      showTab("info");
+
+      infoBox.className = "info-card";
+      infoBox.innerHTML = `
+        <span class="info-type">${item[1]}</span>
+        <h3>${item[0]}</h3>
+        <div class="info-grid">
+          <strong>Meaning</strong><span>${item[2]}</span>
+          <strong>Grammar</strong><span>${item[3]}</span>
+          <strong>Example</strong><span>${item[4]}</span>
+        </div>
+      `;
+    }
+
+    function renderAnalysis(number) {
+      analysisArea.innerHTML = analysis[number];
+
+      document.querySelectorAll("[data-para]").forEach(button => {
+        button.classList.toggle("active", button.dataset.para === String(number));
+      });
+    }
+
+    function renderQuiz() {
+      quizForm.innerHTML = "";
+
+      quiz.forEach((item, questionIndex) => {
+        const fieldset = document.createElement("fieldset");
+
+        const legend = document.createElement("legend");
+        legend.textContent = item.question;
+        fieldset.appendChild(legend);
+
+        item.options.forEach((option, optionIndex) => {
+          const label = document.createElement("label");
+          label.className = "option";
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "q" + questionIndex;
+          input.value = optionIndex;
+
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(option));
+          fieldset.appendChild(label);
+        });
+
+        const feedback = document.createElement("div");
+        feedback.className = "feedback";
+        feedback.id = "feedback-" + questionIndex;
+        fieldset.appendChild(feedback);
+
+        quizForm.appendChild(fieldset);
+      });
+
+      const controls = document.createElement("div");
+      controls.className = "button-row";
+
+      const checkButton = document.createElement("button");
+      checkButton.type = "submit";
+      checkButton.className = "btn primary";
+      checkButton.textContent = "Check quiz";
+
+      const resetButton = document.createElement("button");
+      resetButton.type = "button";
+      resetButton.className = "btn danger";
+      resetButton.textContent = "Reset quiz";
+      resetButton.addEventListener("click", resetQuiz);
+
+      controls.appendChild(checkButton);
+      controls.appendChild(resetButton);
+      quizForm.appendChild(controls);
+    }
+
+    function showTab(tabName) {
+      document.querySelectorAll("[data-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+
+      document.querySelectorAll(".tab-content").forEach(content => {
+        content.classList.remove("active");
+      });
+
+      document.getElementById("tab-" + tabName).classList.add("active");
+    }
+
+    function checkQuiz(event) {
+      event.preventDefault();
+
+      let score = 0;
+      const wrongFocus = [];
+
+      quiz.forEach((item, index) => {
+        const selected = quizForm.querySelector(`input[name="q${index}"]:checked`);
+        const feedback = document.getElementById("feedback-" + index);
+
+        feedback.className = "feedback";
+
+        if (selected && Number(selected.value) === item.answer) {
+          score++;
+          feedback.textContent = "Correct. " + item.feedback;
+          feedback.classList.add("correct");
+        } else {
+          feedback.textContent = "Review this point. " + item.feedback;
+          feedback.classList.add("wrong");
+          wrongFocus.push(item.focus);
+        }
+      });
+
+      const percent = Math.round((score / quiz.length) * 100);
+      const scoreBox = document.getElementById("scoreBox");
+      const scoreText = document.getElementById("scoreText");
+      const progressFill = document.getElementById("progressFill");
+
+      scoreBox.style.display = "block";
+      scoreText.textContent = `Score: ${score} / ${quiz.length} — ${percent}%`;
+      progressFill.style.width = percent + "%";
+      progressFill.textContent = percent + "%";
+
+      renderLearningPath(wrongFocus, percent);
+    }
+
+    function renderLearningPath(wrongFocus, percent) {
+      const learningPath = document.getElementById("learningPath");
+      learningPath.style.display = "block";
+
+      if (wrongFocus.length === 0) {
+        learningPath.innerHTML = `
+          <div class="learning-card">
+            <h3>Your learning path</h3>
+            <p><strong>Excellent work.</strong> You answered all questions correctly.</p>
+            <p>Next step: listen again and summarize the text in three French sentences.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const uniqueFocus = [...new Set(wrongFocus)];
+
+      const advice = {
+        "main idea": "Review the first and last sentence of each paragraph. They often show the topic and purpose.",
+        "details": "Scan for concrete details: people, places, reasons, problems, benefits, and future plans.",
+        "connectors": "Review connectors such as cependant and pourtant. They often indicate contrast."
+      };
+
+      let html = `
+        <div class="learning-card">
+          <h3>Your learning path</h3>
+          <p>Your score is <strong>${percent}%</strong>. Review these micro-learning steps:</p>
+          <ul>
+      `;
+
+      uniqueFocus.forEach(focus => {
+        html += `<li><strong>${focus}:</strong> ${advice[focus]}</li>`;
+      });
+
+      html += `
+          </ul>
+          <p><strong>3-minute practice:</strong> listen to the text again, then explain why Sophie uses her bike more often.</p>
+        </div>
+      `;
+
+      learningPath.innerHTML = html;
+    }
+
+    function resetQuiz() {
+      quizForm.reset();
+
+      quiz.forEach((item, index) => {
+        const feedback = document.getElementById("feedback-" + index);
+        feedback.className = "feedback";
+        feedback.textContent = "";
+      });
+
+      document.getElementById("scoreBox").style.display = "none";
+      document.getElementById("scoreText").textContent = "";
+      document.getElementById("progressFill").style.width = "0%";
+      document.getElementById("progressFill").textContent = "0%";
+
+      const learningPath = document.getElementById("learningPath");
+      learningPath.style.display = "none";
+      learningPath.innerHTML = "";
+    }
+
+    document.addEventListener("click", event => {
+      const hotspot = event.target.closest(".hotspot");
+
+      if (hotspot) {
+        renderInfo(hotspot.dataset.key);
+      }
+    });
+
+    document.querySelectorAll("[data-highlight]").forEach(button => {
+      button.addEventListener("click", () => {
+        const type = button.dataset.highlight;
+        const className = "show-" + type;
+        const pressed = button.getAttribute("aria-pressed") === "true";
+
+        button.setAttribute("aria-pressed", String(!pressed));
+        app.classList.toggle(className, !pressed);
+      });
+    });
+
+    document.getElementById("clearHighlights").addEventListener("click", () => {
+      ["show-verbs", "show-nouns", "show-prepositions", "show-expressions"].forEach(className => {
+        app.classList.remove(className);
+      });
+
+      document.querySelectorAll("[data-highlight]").forEach(button => {
+        button.setAttribute("aria-pressed", "false");
+      });
+    });
+
+    document.querySelectorAll("[data-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        showTab(button.dataset.tab);
+      });
+    });
+
+    document.querySelectorAll("[data-para]").forEach(button => {
+      button.addEventListener("click", () => {
+        renderAnalysis(button.dataset.para);
+      });
+    });
+
+    quizForm.addEventListener("submit", checkQuiz);
+
+    const audio = document.getElementById("audioPlayer");
+    const audioNote = document.getElementById("audioNote");
+
+    audio.addEventListener("loadedmetadata", () => {
+      audioNote.textContent = "Audio loaded. Use the player to listen to the text.";
+    });
+
+    audio.addEventListener("error", () => {
+      audioNote.innerHTML = "Audio file not found. Save your voiceover as <strong>audio/reading.mp3</strong>.";
+    });
+
+    renderReading();
+    renderAnalysis(1);
+    renderQuiz();
+  </script>
+</body>
+</html>
